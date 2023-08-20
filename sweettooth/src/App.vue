@@ -36,12 +36,41 @@
 </template>
 
 <script>
+import {auth, getAuth, onAuthStateChanged, signOut} from "../firebase.js";
+export default{
+  name: "App",
+  data() {
+    return{
+      isAuthenticated : false,
+      isAuthorized: false,
+      email: null,
+      showRequest: false,
+      showAdd: false,
+    };
+  },
+  methods: {
+    signOut() {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          console.log("signed out");
+        })
+        .catch((error)=> {
 
-export default {
-  name: 'App',
-
-  data: () => ({
-    //
-  }),
+        })
+    },
+  },
+  beforeCreate() {
+    onAuthStateChanged(auth, (user) =>{
+      if(user) {
+        console.log("Authenticated");
+        this.isAuthenticated = true;
+      } else {
+        console.log("Not authenticated");
+        this.isAuthenticated = false;
+      }
+    });
+  },
 };
 </script>
+<style scoped></style>
