@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import login from '../views/login.vue'
 import register from '../views/register.vue'
-import rail from'../views/rail.vue'
+import addrecipe from '../views/addRecipe.vue'
+
 
 Vue.use(VueRouter)
 
@@ -24,20 +25,19 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import ('../views/login.vue'),
-    meta: {
-      blockUser: true,
-    },
+    component: login
   },
 
   {
     path: '/register',
     name: 'register',
-    component: () => import ('../views/register.vue'),
-    meta: {
-      blockUser: true,
+    component: register
     },
-  }
+    {
+      path: '/addrecipe',
+      name: 'addrecipe',
+      component: addrecipe
+    }
 ]
 
 const router = new VueRouter({
