@@ -28,9 +28,14 @@
       <v-btn @click="preformSearch" icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn v-show="false && !isAuthenticated" text to="/profile">Profile</v-btn>
+      <v-btn text to="/">Landing</v-btn>
+      <v-btn v-show="isAuthenticated" text to="/profile">Profile</v-btn>
+      <v-btn v-show="isAuthenticated" text to="/addrecipe">
+       <v-icon>+</v-icon>
+      </v-btn>
       <v-btn v-show="!isAuthenticated" text to="/login">Login</v-btn>
       <v-btn v-show="!isAuthenticated"  text to="/register">Register</v-btn>
+      <v-btn v-show="isAuthenticated" @click="signOut" text>Log out</v-btn>
 
 
     </v-app-bar>
