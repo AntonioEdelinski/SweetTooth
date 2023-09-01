@@ -1,83 +1,132 @@
 <template>
-    <div class="add-recipe">
-      <h1>Add Recipe</h1>
-  
-      <div class="form">
-        <input type="file" accept="image/*" @change="handleImageChange" />
-        <img v-if="imagePreview" :src="imagePreview" alt="Recipe Preview" />
-  
-        <label for="recipeName">Dessert Name:</label>
-        <input v-model="recipeName" id="recipeName" />
-  
-        <label for="recipeIngredients">Recipe Ingredients:</label>
-        <textarea v-model="recipeIngredients" id="recipeIngredients"></textarea>
-  
-        <label for="recipeDescription">Description:</label>
-        <textarea v-model="recipeDescription" id="recipeDescription"></textarea>
-  
-        <button @click="addRecipe">Add Recipe</button>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-  import { collection, addDoc } from 'firebase/firestore/lite';
-  import { auth, db } from '../firebase'; // Replace with your actual import path
-  
-  export default {
-    data() {
-      return {
-        imageFile: null,
-        imagePreview: null,
-        recipeName: '',
-        recipeIngredients: '',
-        recipeDescription: '',
-      };
-    },
-    methods: {
-      async handleImageChange(event) {
-        this.imageFile = event.target.files[0];
-        this.imagePreview = URL.createObjectURL(this.imageFile);
-      },
-      async addRecipe() {
-        const storageRef = ref(storage, 'recipes/' + this.imageFile.name);
-        await uploadBytes(storageRef, this.imageFile);
-  
-        const imageURL = await getDownloadURL(storageRef);
-  
-        await addDoc(collection(db, 'recipes'), {
-          name: this.recipeName,
-          ingredients: this.recipeIngredients,
-          description: this.recipeDescription,
-          imageUrl: imageURL,
-          createdBy: auth.currentUser.uid,
-          createdAt: new Date(),
-        });
-  
-        this.imageFile = null;
-        this.imagePreview = null;
-        this.recipeName = '';
-        this.recipeIngredients = '';
-        this.recipeDescription = '';
-  
-         this.$router.push('/');
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .add-recipe {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  </style>
-  
+  <v-container fill-height fluid class="background">
+    <v-row align="center" justify="center">
+      <v-col align="center" justify="center" cols="12">
+        <v-card class="card-border" width="600px" outlined>
+          <v-card-title align="left">New Recipe</v-card-title>
+          <v-card-subtitle align="left"></v-card-subtitle>
+          <v-card-text class="card-text-border">
+            <image-picker @generate="generateBlob"></image-picker>
+
+            <v-text-field v-model="name" label="Dessert name"></v-text-field>
+            <v-textarea v-model="ingredients" label="Ingredients"></v-textarea>
+            <v-textarea v-mode="description" label="Description"></v-textarea>
+          </v-card-text>
+          <v-card-actions class="card-actions">
+            <v-btn @click="submit" color="primary">Add Recipe</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import ImagePicker from "../components/ImagePicker.vue";
+import {
+	storage,
+	ref,
+	doc,
+	getDownloadURL,
+	addDoc,
+	uploadBytes,
+	db,
+} from "../firebase";
+import { collection, updateDoc } from "firebase/firestore/lite";
+
+export default {
+	name: "New-Recipe-View",
+	components: {
+		ImagePicker,
+	},
+	data() {
+		return {
+			imageBinary: null,
+			name: null,
+      ingredients: null,
+      description: null,
+			user: null,
+			email: null,
+			downloadedImageUrl: null,
+			recipeDocReference: null,
+			isLoading: null,
+		};
+	},
+	methods: {
+		async generateBlob(croppaModel) {
+			let blob = await croppaModel.promisedBlob();
+			this.imageBinary = blob;
+			console.log("Blob: ", blob);
+		},
+		clear() {
+			this.imageBinary = null;
+			this.type = null;
+			this.name = null;
+			this.ingredients = null;
+      this.description = null;
+		},
+		async submit() {
+			if (this.imageBinary == null) {
+				console.log("No image");
+				return;
+			}
+			this.isLoading = true;
+			await this.createRecipe();
+			this.uploadRecipeImage();
+		},
+		postActionMoveToView() {
+			this.$router.push({ path: "/recipe" });
+		},
+		uploadRecipeImage() {
+			const imageName = "images/" + this.email + Date.now();
+			const imageRef = ref(storage, imageName);
+			const file = this.imageBinary;
+			uploadBytes(imageRef, file).then((snapshot) => {
+				console.log("Uploaded a blob or a file ", snapshot);
+				getDownloadURL(imageRef)
+					.then((url) => {
+						this.downloadedImageUrl = url;
+						this.updateRecipePickerReference(url);
+						console.log("File saved successfully at ", url);
+						this.postActionMoveToView();
+					})
+					.catch((error) => {
+						switch (error.code) {
+							case "storage/object-not-found":
+								break;
+							case "storage/unauthorized":
+								break;
+							case "storage/canceled":
+								break;
+						}
+					});
+			});
+		},
+		async updateRecipePickerReference() {
+			let docReference = this.recipeDocReference;
+			let imageUrl = this.downloadedImageUrl;
+			let response = await updateDoc(
+				doc(db, "recipe", docReference.id),
+				{
+					ImageUrl: imageUrl,
+				}
+			);
+			this.isLoading = false;
+		},
+		async createRecipe() {
+			let recipeDocReference = await addDoc(collection(db, "recipe"), {
+				Type: this.type,
+				Name: this.name,
+				Ingredients: this.ingredients,
+        Description: this.description,
+				ImageUrl: null,
+			});
+			this.recipeDocReference = recipeDocReference;
+		},
+	},
+	mounted() {
+		debugger;
+	},
+};
+</script>
+<style></style>
