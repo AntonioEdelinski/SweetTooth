@@ -3,6 +3,7 @@
 		<v-row align="center" justify="center">
 			<v-col align="center" justify="center" cols="12">
 				<v-card class="card-border" width="600px" outlined>
+					<img src="@/assets/preuzmi.png" alt="Your Image" class="center-image" />
 					<v-card-title align="left">REGISTER</v-card-title>
 					<v-card-subtitle align="left">
 						
@@ -72,7 +73,7 @@ import {
 	db,
 	setDoc,
 	createUserWithEmailAndPassword,
-} from "../../firebase.js";
+} from "../firebase.js";
 export default {
 	name: "RegistrationView",
 	components: {},
@@ -111,7 +112,7 @@ export default {
 			this.password = null;
 		},
 		postActionMoveToView() {
-			this.$router.push({ path: "/animals" });
+			this.$router.push({ path: "/" });
 		},
 		async saveAdditionalData(user, email, firstName, lastName) {
 			await setDoc(doc(db, "users", email), {
