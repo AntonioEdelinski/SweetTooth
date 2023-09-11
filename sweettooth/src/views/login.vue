@@ -3,6 +3,7 @@
 	  <v-row align="center" justify="center">
 		<v-col align="center" justify="center" cols="12">
 		  <v-card class="card-border" width="600px" outlined>
+			<img src="@/assets/preuzmi.png" alt="Your Image" class="center-image" />
 			<v-card-title align="left">LOGIN</v-card-title>
 			<v-card-text class="card-text-border">
 			  <v-form v-model="valid">
