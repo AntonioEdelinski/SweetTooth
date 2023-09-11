@@ -4,13 +4,20 @@
       <div class="d-flex align-center">
         <v-typography class="title">SweetTooth</v-typography>
       </div>
-
       <v-spacer></v-spacer>
       <v-btn text to="/">HOME</v-btn>
+      
+      <!-- Include the SearchBar component in the app bar -->
+      <search-bar @suggestion-selected="handleSuggestionSelected" />
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <!-- Display the selected suggestion if it exists -->
+      <div v-if="selectedSuggestion">
+        <router-view :selectedSuggestion="selectedSuggestion" />
+      </div>
+      <!-- If no selected suggestion, display the regular home content -->
+      <router-view v-else />
     </v-main>
 
     <v-btn
@@ -45,36 +52,43 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { auth, getAuth, onAuthStateChanged, signOut } from "./firebase.js";
+import { ref } from "vue";
+import { auth, onAuthStateChanged, signOut } from "./firebase.js";
+import SearchBar from "./components/SearchBar.vue";
 
 export default {
   name: "App",
+  components: { SearchBar },
   setup() {
     const isAuthenticated = ref(false);
-    
+    const selectedSuggestion = ref(null);
+
     const handleSignOut = async () => {
-      const authInstance = getAuth();
+      const authInstance = auth;
       try {
         await signOut(authInstance);
         console.log("Signed out");
-
         if (router.currentRoute.value.path !== '/') {
-          router.push('/'); 
+          router.push('/');
         }
       } catch (error) {
         console.error("Sign out error:", error);
       }
     };
-    
 
     onAuthStateChanged(auth, (user) => {
-      isAuthenticated.value = !!user; 
+      isAuthenticated.value = !!user;
     });
+
+    const handleSuggestionSelected = (suggestion) => {
+      selectedSuggestion.value = suggestion;
+    };
 
     return {
       isAuthenticated,
       signOut: handleSignOut,
+      selectedSuggestion,
+      handleSuggestionSelected,
     };
   },
 };
