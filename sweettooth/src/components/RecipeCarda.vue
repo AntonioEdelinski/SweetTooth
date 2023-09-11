@@ -3,8 +3,11 @@
     <div class="recipe-header">
     </div>
     <div class="recipe-content">
-      <h2>{{ recipe.name }}</h2>
+      <h2>Ime:</h2>
+      <h3>{{ recipe.name }}</h3>
+      <h2>Sastojci:</h2>
       <p>{{ recipe.ingredients }}</p>
+      <h2>Opis:</h2>
       <p>{{ recipe.description }}</p>
     </div>
   </div>
