@@ -1,92 +1,94 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="pink"
-      dark
-    >
+    <v-app-bar app color="pink" dark>
       <div class="d-flex align-center">
-        <v-img
-       
-        />
-
-        <img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="@/assets/set-in-salden-titling.png"
-          width="100"
-        />
+        <v-typography class="title">SweetTooth</v-typography>
       </div>
 
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="searchQuery"
-        label="Search"
-      ></v-text-field>
-      <v-btn @click="preformSearch" icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <v-btn text to="/">Landing</v-btn>
-      <v-btn v-show="isAuthenticated" text to="/profile">Profile</v-btn>
-      <v-btn v-show="isAuthenticated" text to="/addrecipe">
-       <v-icon>+</v-icon>
-      </v-btn>
-      <v-btn v-show="!isAuthenticated" text to="/login">Login</v-btn>
-      <v-btn v-show="!isAuthenticated"  text to="/register">Register</v-btn>
-      <v-btn v-show="isAuthenticated" @click="signOut" text>Log out</v-btn>
-
-
+      <v-btn text to="/">HOME</v-btn>
     </v-app-bar>
-
 
     <v-main>
       <router-view/>
     </v-main>
+
+    <v-btn
+      v-if="isAuthenticated"
+      fab
+      dark
+      bottom
+      left
+      fixed
+      class="add-button"
+      @click="$router.push('/addrecipe')"
+    >
+      Add
+    </v-btn>
+
+    <v-btn
+      v-if="isAuthenticated"
+      fab
+      dark
+      bottom
+      right
+      fixed
+      class="profile-button"
+      @click="$router.push('/profile')"
+    >
+     Profile
+    </v-btn>
+    <v-btn v-show="!isAuthenticated" text to="/login" class="colored-button">Login</v-btn>
+    <v-btn v-show="!isAuthenticated" text to="/register" class="colored-button">Register</v-btn>
+    <v-btn v-show="isAuthenticated" @click="signOut" text>Sign Out</v-btn>
   </v-app>
 </template>
 
 <script>
-import {auth, getAuth, onAuthStateChanged, signOut} from "./firebase.js";
-export default{
+import { ref, onMounted } from "vue";
+import { auth, getAuth, onAuthStateChanged, signOut } from "./firebase.js";
+
+export default {
   name: "App",
-  data() {
-    return{
-      isAuthenticated : false,
-      isAuthorized: false,
-      email: null,
-      searchQuery: "",
-      showRequest: false,
-      showAdd: false,
-    };
-  },
-  methods: {
-    signOut() {
+  setup() {
+    const isAuthenticated = ref(false);
+    
+    const handleSignOut = async () => {
       const authInstance = getAuth();
-      signOut(authInstance)
-        .then(() => {
-          console.log("signed out");
-        })
-        .catch((error)=> {
-          console.error("Sign out error:", error);
-        });
-    },
-    preformSearch(){
-      console.log("Preforming search:", this.searchQuery);
-    },
-  },
-  beforeCreate() {
-    onAuthStateChanged(auth, (user) =>{
-      if(user) {
-        console.log("Authenticated");
-        this.isAuthenticated = true;
-      } else {
-        console.log("Not authenticated");
-        this.isAuthenticated = false;
+      try {
+        await signOut(authInstance);
+        console.log("Signed out");
+
+        if (router.currentRoute.value.path !== '/') {
+          router.push('/'); 
+        }
+      } catch (error) {
+        console.error("Sign out error:", error);
       }
+    };
+    
+
+    onAuthStateChanged(auth, (user) => {
+      isAuthenticated.value = !!user; 
     });
+
+    return {
+      isAuthenticated,
+      signOut: handleSignOut,
+    };
   },
 };
 </script>
-<style scoped></style>
+
+<style scoped>
+.add-button, .profile-button {
+  margin: 16px;
+  border-radius: 0;
+  min-width: 100px;
+}
+
+.colored-button {
+  background-color: rosybrown; 
+  color: antiquewhite; 
+}
+</style>
