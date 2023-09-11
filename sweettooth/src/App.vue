@@ -6,7 +6,6 @@
       </div>
       <v-spacer></v-spacer>
       <v-btn text to="/">HOME</v-btn>
-      
       <search-bar @suggestion-selected="handleSuggestionSelected" />
     </v-app-bar>
 
