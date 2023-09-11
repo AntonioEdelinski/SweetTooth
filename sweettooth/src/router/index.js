@@ -4,7 +4,10 @@ import HomeView from '../views/HomeView.vue'
 import login from '../views/login.vue'
 import register from '../views/register.vue'
 import addrecipe from '../views/addRecipe.vue'
-import profile from '../views/profileView.vue'
+import profileView from '../views/profileView.vue'
+
+
+
 
 
 Vue.use(VueRouter)
@@ -39,11 +42,12 @@ const routes = [
       name: 'addrecipe',
       component: addrecipe
     },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: profile
-  }
+
+    {
+      path: '/profile',
+      name:'profile',
+      component: profileView
+    }
 ]
 
 const router = new VueRouter({
