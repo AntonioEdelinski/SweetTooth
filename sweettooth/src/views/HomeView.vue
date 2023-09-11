@@ -2,7 +2,6 @@
   <div class="home-container">
     <h1>Desserts</h1>
 
-    <!-- Loop through your recipes and display a card for each one -->
     <recipe-card
       v-for="recipe in recipes"
       :key="recipe.id"
