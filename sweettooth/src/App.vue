@@ -7,16 +7,13 @@
       <v-spacer></v-spacer>
       <v-btn text to="/">HOME</v-btn>
       
-      <!-- Include the SearchBar component in the app bar -->
       <search-bar @suggestion-selected="handleSuggestionSelected" />
     </v-app-bar>
 
     <v-main>
-      <!-- Display the selected suggestion if it exists -->
       <div v-if="selectedSuggestion">
         <router-view :selectedSuggestion="selectedSuggestion" />
       </div>
-      <!-- If no selected suggestion, display the regular home content -->
       <router-view v-else />
     </v-main>
 
