@@ -7,10 +7,8 @@
 		<v-card-text>
 		  <v-row>
 			<v-col cols="6">
-			  <!-- Image Picker -->
 			  <ImagePicker @generate-blob="generateBlob"></ImagePicker>
   
-			  <!-- Display Image -->
 			  <v-img
 				v-if="imagePreview"
 				:src="imagePreview"
@@ -21,7 +19,6 @@
 			  ></v-img>
 			</v-col>
 			<v-col cols="6">
-			  <!-- Recipe Details Form -->
 			  <v-form>
 				<v-text-field
 				  v-model="recipeName"
@@ -110,6 +107,5 @@
   </script>
   
   <style scoped>
-  /* Add your component-specific styles here */
   </style>
   
