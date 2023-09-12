@@ -54,7 +54,7 @@ export default {
 				console.log("No image");
 				return;
 			}
-			this.emit("generate", this.croppaModel);
+			this.$emit("generate-blob", this.croppaModel);
 		},
 	},
 };
