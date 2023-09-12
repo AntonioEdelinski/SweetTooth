@@ -5,23 +5,42 @@
 		  Add Recipe
 		</v-card-title>
 		<v-card-text>
-		  <v-form>
-			<v-text-field
-			  v-model="recipeName"
-			  label="Dessert Name"
-			  required
-			></v-text-field>
-			<v-textarea
-			  v-model="recipeIngredients"
-			  label="Recipe Ingredients"
-			  required
-			></v-textarea>
-			<v-textarea
-			  v-model="recipeDescription"
-			  label="Description"
-			  required
-			></v-textarea>
-		  </v-form>
+		  <v-row>
+			<v-col cols="6">
+			  <!-- Image Picker -->
+			  <ImagePicker @generate-blob="generateBlob"></ImagePicker>
+  
+			  <!-- Display Image -->
+			  <v-img
+				v-if="imagePreview"
+				:src="imagePreview"
+				width="300"
+				height="300"
+				:lazy-src="imagePreview"
+				@click="editImage"
+			  ></v-img>
+			</v-col>
+			<v-col cols="6">
+			  <!-- Recipe Details Form -->
+			  <v-form>
+				<v-text-field
+				  v-model="recipeName"
+				  label="Dessert Name"
+				  required
+				></v-text-field>
+				<v-textarea
+				  v-model="recipeIngredients"
+				  label="Recipe Ingredients"
+				  required
+				></v-textarea>
+				<v-textarea
+				  v-model="recipeDescription"
+				  label="Description"
+				  required
+				></v-textarea>
+			  </v-form>
+			</v-col>
+		  </v-row>
 		</v-card-text>
 		<v-card-actions>
 		  <v-btn color="primary" @click="submitRecipe">Add Recipe</v-btn>
@@ -31,25 +50,40 @@
   </template>
   
   <script>
-  import {
-	db,
-	addDoc,
-  } from "../firebase";
+  import { db, addDoc } from "../firebase";
   import { collection } from "firebase/firestore/lite";
- 
+  import ImagePicker from "@/components/ImagePicker.vue";
   
   export default {
+	components: {
+		ImagePicker,
+	},
 	data() {
 	  return {
+		imageBinary: null,
+		imagePreview: null,
 		recipeName: "",
 		recipeIngredients: "",
 		recipeDescription: "",
 	  };
 	},
 	methods: {
+	  generateBlob(blob) {
+		this.imageBinary = blob;
+		this.imagePreview = URL.createObjectURL(blob);
+	  },
+	  editImage() {
+		this.imageBinary = null;
+		this.imagePreview = null;
+	  },
 	  async submitRecipe() {
 		if (!this.recipeName || !this.recipeIngredients || !this.recipeDescription) {
 		  alert("Please fill in all fields.");
+		  return;
+		}
+  
+		if (!this.imageBinary) {
+		  alert("Please select an image.");
 		  return;
 		}
   
@@ -76,5 +110,6 @@
   </script>
   
   <style scoped>
+  /* Add your component-specific styles here */
   </style>
   
