@@ -19,6 +19,7 @@
 			  ></v-img>
 			</v-col>
 			<v-col cols="6">
+			  <!-- Recipe Details Form -->
 			  <v-form>
 				<v-text-field
 				  v-model="recipeName"
