@@ -43,8 +43,9 @@
 			</v-card-text>
 			<v-card-actions class="card-actions">
 			  <v-btn @click="login" :disabled="isButtonDisabled" outlined>
-				OK
+				LOGIN
 			  </v-btn>
+			  <v-btn text @click="$router.push('/register')">Register</v-btn>
 			</v-card-actions>
 		  </v-card>
 		  <v-dialog
@@ -134,7 +135,6 @@
 		  .catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
-			// Handle error if needed
 		  });
 		this.closeDialog();
 	  },
