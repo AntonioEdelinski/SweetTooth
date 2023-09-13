@@ -2,11 +2,16 @@
   <v-app>
     <v-app-bar app color="pink" dark>
       <div class="d-flex align-center">
-        <v-typography class="title">SweetTooth</v-typography>
+        SweetTooth
       </div>
       <v-spacer></v-spacer>
       <v-btn text to="/">HOME</v-btn>
+      
+      
       <search-bar @suggestion-selected="handleSuggestionSelected" />
+      <v-btn v-show="!isAuthenticated" text to="/login" class="colored-button">Login</v-btn>
+    <v-btn v-show="!isAuthenticated" text to="/register" class="colored-button">Register</v-btn>
+    <v-btn v-show="isAuthenticated" @click="signOut" text>Sign Out</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -41,9 +46,6 @@
     >
      Profile
     </v-btn>
-    <v-btn v-show="!isAuthenticated" text to="/login" class="colored-button">Login</v-btn>
-    <v-btn v-show="!isAuthenticated" text to="/register" class="colored-button">Register</v-btn>
-    <v-btn v-show="isAuthenticated" @click="signOut" text>Sign Out</v-btn>
   </v-app>
 </template>
 
@@ -98,7 +100,7 @@ export default {
 }
 
 .colored-button {
-  background-color: rosybrown; 
-  color: antiquewhite; 
+  background-color: white; 
+  color: black; 
 }
 </style>
