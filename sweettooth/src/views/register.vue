@@ -57,7 +57,7 @@
 							:disabled="isButtonDisabled"
 							outlined
 							@click="registerUser">
-							OK
+							REGISTER
 						</v-btn>
 					</v-card-actions>
 				</v-card>
