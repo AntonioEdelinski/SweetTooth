@@ -3,6 +3,7 @@
     <div class="recipe-header">
     </div>
     <div class="recipe-content">
+      <img :src="recipe.imageUrl" alt="Recipe" />
       <h2>Ime:</h2>
       <h3>{{ recipe.name }}</h3>
       <h2>Sastojci:</h2>
